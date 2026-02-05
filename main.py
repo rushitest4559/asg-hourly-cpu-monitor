@@ -74,7 +74,7 @@ def main():
 
     # Simplified for SES. Boto3 uses environment variables for AWS credentials.
     email_client = EmailClient(
-        region_name="us-east-1",  # Change to your verified SES region
+        region_name="ap-south-1",  # Change to your verified SES region
         sender=EMAIL_SENDER
     )
 
