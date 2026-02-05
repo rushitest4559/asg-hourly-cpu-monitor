@@ -86,7 +86,6 @@ def main():
         SMTP_PASSWORD,
         EMAIL_SENDER,
     )
-    email_client.connect() 
 
     for owner_email, data in reports.items():
         print(f"   ✉️ Sending email to: {owner_email}")
@@ -94,8 +93,6 @@ def main():
         html = build_html(owner_email, data["asgs"])
 
         email_client.send_email(owner_email, subject, html)
-
-    email_client.disconnect()
 
     logger.info("Email process completed.")
 
