@@ -2,14 +2,7 @@ from datetime import timezone, timedelta
 
 IST = timezone(timedelta(hours=5, minutes=30))
 
-
 def format_owner_report(owner_email, asg_records, window_start, window_end):
-    """
-    Builds report ensuring every hour is shown.
-    - Missing metrics -> 'No instances'
-    - CPU 0% -> shown normally
-    """
-
     report = {
         "owner": owner_email,
         "asgs": [],
@@ -26,17 +19,24 @@ def format_owner_report(owner_email, asg_records, window_start, window_end):
             "metrics": [],
         }
 
-        cpu_data = asg.get("cpu_metrics", {})
+        # --- FIX: Normalize metrics keys to the top of the hour ---
+        raw_cpu_data = asg.get("cpu_metrics", {})
+        cpu_data = {
+            ts.replace(minute=0, second=0, microsecond=0): val 
+            for ts, val in raw_cpu_data.items()
+        }
+        # ---------------------------------------------------------
 
-        # build full hourly timeline
         current = window_start.replace(minute=0, second=0, microsecond=0)
 
         while current <= window_end:
             ts_ist = current.astimezone(IST)
 
+            # Now 'current' (which is 14:00) will match 'cpu_data' keys (also 14:00)
             if current in cpu_data:
-                avg = cpu_data[current].get("avg")
-                maxv = cpu_data[current].get("max")
+                metrics_at_hour = cpu_data[current]
+                avg = metrics_at_hour.get("avg")
+                maxv = metrics_at_hour.get("max")
 
                 formatted_asg["metrics"].append({
                     "time": ts_ist.strftime("%Y-%m-%d %H:%M"),
