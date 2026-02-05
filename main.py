@@ -11,18 +11,12 @@ from processing.validator import validate_asg
 from notifications.email_client import EmailClient
 from notifications.templates import build_subject, build_html
 
-from config import (
-    SMTP_SERVER,
-    SMTP_PORT,
-    SMTP_USERNAME,
-    SMTP_PASSWORD,
-    EMAIL_SENDER,
-)
+# Note: Removed SMTP specific imports. Ensure AWS_REGION is in your config or env.
+from config import EMAIL_SENDER
 
 from utils.logger import get_logger
 
 logger = get_logger(__name__)
-
 
 def main():
     logger.info("Starting ASG CPU monitoring...")
@@ -38,7 +32,6 @@ def main():
 
     for region in regions:
         print(f"\n➡️ Processing Region: {region}")
-
         asgs = fetch_asgs(region)
         print(f"   🔎 ASGs Found: {len(asgs)}")
 
@@ -79,12 +72,10 @@ def main():
             window_end
         )
 
+    # Simplified for SES. Boto3 uses environment variables for AWS credentials.
     email_client = EmailClient(
-        SMTP_SERVER,
-        SMTP_PORT,
-        SMTP_USERNAME,
-        SMTP_PASSWORD,
-        EMAIL_SENDER,
+        region_name="us-east-1",  # Change to your verified SES region
+        sender=EMAIL_SENDER
     )
 
     for owner_email, data in reports.items():
@@ -95,7 +86,6 @@ def main():
         email_client.send_email(owner_email, subject, html)
 
     logger.info("Email process completed.")
-
 
 if __name__ == "__main__":
     main()
