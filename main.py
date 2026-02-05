@@ -27,6 +27,10 @@ logger = get_logger(__name__)
 def main():
     logger.info("Starting ASG CPU monitoring...")
 
+    now = datetime.now(timezone.utc)
+    window_end = now
+    window_start = now - timedelta(hours=24)
+
     regions = get_all_regions()
     print(f"\n🌍 Total Regions Found: {len(regions)}")
 
