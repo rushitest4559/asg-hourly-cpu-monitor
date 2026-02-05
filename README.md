@@ -1,20 +1,35 @@
 # 🚀 ASG Hourly CPU Monitoring & Owner Alerting
 
-VMs are nearly 30–40% of total cloud bills, and studies often show ~35% compute is wasted across companies.  
-Today most workloads run behind Auto Scaling Groups (ASG) — whether via EKS node groups, ECS capacity providers, or traditional autoscaling. Instances are ephemeral by design, so monitoring individual instances is unreliable.
+Cloud reality check ⚡
+VMs eat 30–40% of cloud bills. Around 35% compute sits idle doing absolutely nothing.
 
-👉 The correct approach is to monitor ASG-level compute behavior.  
-This script automates ASG CPU monitoring and sends owner-specific hourly utilization reports.
+Meanwhile… most workloads hide behind Auto Scaling Groups — EKS, ECS, node groups — everything.
+Instances come and go. Watching individual VMs is basically chasing ghosts.
+
+👉 So instead of watching instances… this project watches ASG behavior itself — where the real truth lives.
+
+It scans AWS, understands ASGs, reads CPU patterns hour-by-hour, and quietly sends owners a clear picture of what their compute actually did in the last 24 hours.
 
 ---
 
 ## ⚙️ What This Script Does (Algorithm)
 
-1. Scans AWS globally and quietly builds a live map of every region.  
-2. Hunts down ASGs and extracts their identity, capacity DNA, and ownership clues from tags.  
-3. Pulls 24-hour CPU signals from CloudWatch and reshapes them into hourly intelligence.  
-4. Detects silence in metrics and translates gaps into “No instances” or true idle `0%`.  
-5. Filters out broken or suspicious ASGs before they contaminate reports.  
-6. Clusters infrastructure by real human owners using tag intelligence.  
-7. Converts raw telemetry into clean IST-based hourly timelines with context.  
-8. Crafts structured HTML dashboards and delivers personalized reports straight to inboxes.
+1. Looks across AWS like a radar and finds every active region.
+
+2. Walks into each region and discovers every ASG hiding there.
+
+3. Pulls identity details — size, capacity limits, creation time, and owner tags.
+
+4. Asks CloudWatch: “what really happened every hour for the last 24h?”
+
+5. If metrics disappear → marks No instances, not fake zeros.
+
+6. If instances exist but sleep → shows honest 0% CPU.
+
+7. Groups infrastructure by actual humans responsible for it.
+
+8. Builds clean hourly timelines in IST so nobody does timezone math.
+
+9. Generates simple HTML dashboards — one owner, only their ASGs.
+
+10. Sends reports directly to inboxes without noise or drama.
